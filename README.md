@@ -42,6 +42,10 @@ This language server provides "find references" through JEDI.
 
 This language server provides "rename word/symbol" through JEDI.
 
+## Code Actions
+
+This language server can inline variables for you with a code action.
+
 ## Linters
 
 The default linters used are `pycodestyle` and `pyflakes`. You can optionally enable `mypy`.
