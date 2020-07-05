@@ -1,6 +1,7 @@
 # LSP-anakin
 
-This is a helper package that automatically installs and updates the Anakin Language Server for you.
+This is a helper package that automatically installs and updates the
+[Anakin Language Server](https://github.com/muffinmad/anakin-language-server) for you.
 
 To use this package, you must have the [LSP](https://packagecontrol.io/packages/LSP) package installed as well.
 
