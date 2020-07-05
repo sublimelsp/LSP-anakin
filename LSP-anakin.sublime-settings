@@ -1,0 +1,40 @@
+// This file is read-only and lives in
+//
+//    $DATA/Installed Packages/LSP-anakin.sublime-package
+//
+// Provided you installed this package through Package Control. To modify one
+// of these settings, you should see a template file to your right where you
+// can override various key-value pairs.
+//
+// It is safe to partially override the "settings" key.
+//
+// After making changes you must *save* the *right* view in
+// $DATA/Packages/User/LSP-anakin.sublime-settings.
+{
+    "command": [
+        "$cache_path/LSP-anakin/bin/anakinls"
+    ],
+    "languages": [
+        {
+            "languageId": "python",
+        }
+    ],
+    "version": "1.8",
+    "initializationOptions": {
+        // "venv": "path/to/virtualenv"
+    },
+    "env": {
+        "PYTHONPATH": "$sublime_py_files_dir:$sublime_packages_dir",
+        "MYPY_PATH": "$sublime_py_files_dir:$sublime_packages_dir"
+    },
+    "settings": {
+        "anakinls.pyflakes_errors": [
+            "undefined-name"
+        ],
+        "anakinls.help_on_hover": true,
+        "anakinls.mypy_enabled": false,
+        "anakinls.pycodestyle_config": null,
+        "anakinls.completion_snippet_first": false,
+        "anakinls.yapf_style_config": "pep8"
+    },
+}
