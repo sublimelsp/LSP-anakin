@@ -1,21 +1,26 @@
-import os
-import shutil
-import subprocess
-import re
+from __future__ import annotations
 
-import sublime
 from LSP.plugin import AbstractPlugin
-from LSP.plugin.core.typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any
+from typing import override
+import os
+import re
+import shutil
+import sublime
+import subprocess
 
 
 class Anakin(AbstractPlugin):
     @classmethod
+    @override
     def name(cls) -> str:
         return "anakin"
 
     @classmethod
-    def additional_variables(cls) -> Optional[Dict[str, str]]:
-        variables = {}
+    @override
+    def additional_variables(cls) -> dict[str, str] | None:
+        variables: dict[str, str] = {}
         variables['sublime_py_files_dir'] = os.path.dirname(sublime.__file__)
         variables["sublime_packages_dir"] = sublime.packages_path()
         return variables
@@ -56,6 +61,7 @@ class Anakin(AbstractPlugin):
         return subprocess.check_output(args=args, cwd=kwargs.get("cwd"), startupinfo=startupinfo)
 
     @classmethod
+    @override
     def needs_update_or_installation(cls) -> bool:
         if os.path.exists(cls.server_exe()):
             first_line = cls.run(cls.server_exe(), "--version").decode("ascii").splitlines()[0]
@@ -66,10 +72,11 @@ class Anakin(AbstractPlugin):
         return True
 
     @classmethod
+    @override
     def install_or_update(cls) -> None:
         shutil.rmtree(cls.basedir(), ignore_errors=True)
         try:
-            os.makedirs(cls.basedir(), exist_ok=True)
+            Path(cls.basedir()).mkdir(exist_ok=True, parents=True)
             cls.run(cls.python_exe(), "-m", "venv", "LSP-anakin", cwd=sublime.cache_path())
             anakin = "anakin-language-server=={}".format(cls.version_str())
             cls.run(cls.pip_exe(), "install", anakin)
