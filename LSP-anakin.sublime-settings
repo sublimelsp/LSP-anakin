@@ -14,11 +14,7 @@
     "command": [
         "$cache_path/LSP-anakin/bin/anakinls"
     ],
-    "languages": [
-        {
-            "languageId": "python",
-        }
-    ],
+    "selector": "source.python",
     "version": "1.8",
     "initializationOptions": {
         // "venv": "path/to/virtualenv"
