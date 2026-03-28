@@ -3,7 +3,7 @@ from __future__ import annotations
 from LSP.plugin import AbstractPlugin
 from pathlib import Path
 from typing import Any
-from typing import override
+from typing_extensions import override
 import os
 import re
 import shutil
@@ -21,7 +21,7 @@ class Anakin(AbstractPlugin):
     @override
     def additional_variables(cls) -> dict[str, str] | None:
         variables: dict[str, str] = {}
-        variables['sublime_py_files_dir'] = os.path.dirname(sublime.__file__)
+        variables["sublime_py_files_dir"] = os.path.dirname(sublime.__file__)
         variables["sublime_packages_dir"] = sublime.packages_path()
         return variables
 
@@ -63,7 +63,7 @@ class Anakin(AbstractPlugin):
     @classmethod
     @override
     def needs_update_or_installation(cls) -> bool:
-        if os.path.exists(cls.server_exe()):
+        if Path(cls.server_exe()).exists():
             first_line = cls.run(cls.server_exe(), "--version").decode("ascii").splitlines()[0]
             match = re.search(r"anakinls v(.+)", first_line)
             if match:
@@ -78,7 +78,7 @@ class Anakin(AbstractPlugin):
         try:
             Path(cls.basedir()).mkdir(exist_ok=True, parents=True)
             cls.run(cls.python_exe(), "-m", "venv", "LSP-anakin", cwd=sublime.cache_path())
-            anakin = "anakin-language-server=={}".format(cls.version_str())
+            anakin = f"anakin-language-server=={cls.version_str()}"
             cls.run(cls.pip_exe(), "install", anakin)
         except Exception:
             shutil.rmtree(cls.basedir(), ignore_errors=True)
