@@ -16,7 +16,7 @@
     ],
     "selector": "source.python",
     "version": "1.8",
-    "initializationOptions": {
+    "initialization_options": {
         // "venv": "path/to/virtualenv"
     },
     "env": {
