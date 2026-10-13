@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from LSP.plugin import AbstractPlugin
+from LSP.plugin import LspPlugin
+from LSP.plugin import OnPreStartContext
 from pathlib import Path
 from typing import Any
 from typing_extensions import override
@@ -11,19 +12,14 @@ import sublime
 import subprocess
 
 
-class Anakin(AbstractPlugin):
+class Anakin(LspPlugin):
     @classmethod
     @override
-    def name(cls) -> str:
-        return "anakin"
-
-    @classmethod
-    @override
-    def additional_variables(cls) -> dict[str, str] | None:
-        variables: dict[str, str] = {}
-        variables["sublime_py_files_dir"] = os.path.dirname(sublime.__file__)
-        variables["sublime_packages_dir"] = sublime.packages_path()
-        return variables
+    def on_pre_start_async(cls, context: OnPreStartContext) -> None:
+        if cls.needs_update_or_installation():
+            cls.install_or_update()
+        context.variables["sublime_py_files_dir"] = os.path.dirname(sublime.__file__)
+        context.variables["sublime_packages_dir"] = sublime.packages_path()
 
     @classmethod
     def basedir(cls) -> str:
@@ -61,7 +57,6 @@ class Anakin(AbstractPlugin):
         return subprocess.check_output(args=args, cwd=kwargs.get("cwd"), startupinfo=startupinfo)
 
     @classmethod
-    @override
     def needs_update_or_installation(cls) -> bool:
         if Path(cls.server_exe()).exists():
             first_line = cls.run(cls.server_exe(), "--version").decode("ascii").splitlines()[0]
@@ -72,7 +67,6 @@ class Anakin(AbstractPlugin):
         return True
 
     @classmethod
-    @override
     def install_or_update(cls) -> None:
         shutil.rmtree(cls.basedir(), ignore_errors=True)
         try:
@@ -83,3 +77,11 @@ class Anakin(AbstractPlugin):
         except Exception:
             shutil.rmtree(cls.basedir(), ignore_errors=True)
             raise
+
+
+def plugin_loaded() -> None:
+    Anakin.register()
+
+
+def plugin_unloaded() -> None:
+    Anakin.unregister()
