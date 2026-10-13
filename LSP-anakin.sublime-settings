@@ -15,7 +15,7 @@
         "$cache_path/LSP-anakin/bin/anakinls"
     ],
     "selector": "source.python",
-    "version": "1.8",
+    "version": "1.23",
     "initialization_options": {
         // "venv": "path/to/virtualenv"
     },
