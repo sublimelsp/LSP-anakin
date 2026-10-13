@@ -12,7 +12,7 @@
 // $DATA/Packages/User/LSP-anakin.sublime-settings.
 {
     "command": [
-        "$cache_path/LSP-anakin/bin/anakinls"
+        "$anakinls"
     ],
     "selector": "source.python",
     "version": "1.23",
