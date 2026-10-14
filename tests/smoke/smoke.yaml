@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sublimelsp/lsp_smoke_test/v1/smoke.schema.json
+file: sample.py
+# The session name until the package is migrated to LspPlugin.
+server: anakin
+# Starting the server includes installing anakin-language-server with pip.
+expected_diagnostics:
+  message: undefined name
+diagnostics_timeout: 240

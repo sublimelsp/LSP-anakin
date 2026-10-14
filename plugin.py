@@ -23,6 +23,7 @@ class Anakin(AbstractPlugin):
         variables: dict[str, str] = {}
         variables["sublime_py_files_dir"] = os.path.dirname(sublime.__file__)
         variables["sublime_packages_dir"] = sublime.packages_path()
+        variables["anakinls"] = cls.server_exe()
         return variables
 
     @classmethod
@@ -31,15 +32,20 @@ class Anakin(AbstractPlugin):
 
     @classmethod
     def bindir(cls) -> str:
-        return os.path.join(cls.basedir(), "bin")
+        # Virtual environments keep their executables in "Scripts" on Windows.
+        return os.path.join(cls.basedir(), "Scripts" if sublime.platform() == "windows" else "bin")
+
+    @classmethod
+    def exe(cls, name: str) -> str:
+        return os.path.join(cls.bindir(), name + (".exe" if sublime.platform() == "windows" else ""))
 
     @classmethod
     def server_exe(cls) -> str:
-        return os.path.join(cls.bindir(), "anakinls")
+        return cls.exe("anakinls")
 
     @classmethod
     def pip_exe(cls) -> str:
-        return os.path.join(cls.bindir(), "pip")
+        return cls.exe("pip")
 
     @classmethod
     def version_str(cls) -> str:
@@ -48,6 +54,10 @@ class Anakin(AbstractPlugin):
 
     @classmethod
     def python_exe(cls) -> str:
+        settings = sublime.load_settings("LSP-anakin.sublime-settings")
+        python = settings.get("python")
+        if isinstance(python, str) and python:
+            return python
         return "python" if sublime.platform() == "windows" else "python3"
 
     @classmethod
@@ -58,7 +68,15 @@ class Anakin(AbstractPlugin):
             startupinfo.dwFlags |= flag
         else:
             startupinfo = None
-        return subprocess.check_output(args=args, cwd=kwargs.get("cwd"), startupinfo=startupinfo)
+        # Sublime Text has no console on Windows, so give the child process its own stdin and stderr. Otherwise Python
+        # fails to flush stderr on exit and exits with status 120, even after "pip install" succeeded.
+        return subprocess.check_output(
+            args=args,
+            cwd=kwargs.get("cwd"),
+            startupinfo=startupinfo,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
 
     @classmethod
     @override
