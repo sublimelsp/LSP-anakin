@@ -64,7 +64,15 @@ class Anakin(AbstractPlugin):
             startupinfo.dwFlags |= flag
         else:
             startupinfo = None
-        return subprocess.check_output(args=args, cwd=kwargs.get("cwd"), startupinfo=startupinfo)
+        # Sublime Text has no console on Windows, so give the child process its own stdin and stderr. Otherwise Python
+        # fails to flush stderr on exit and exits with status 120, even after "pip install" succeeded.
+        return subprocess.check_output(
+            args=args,
+            cwd=kwargs.get("cwd"),
+            startupinfo=startupinfo,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
 
     @classmethod
     @override
