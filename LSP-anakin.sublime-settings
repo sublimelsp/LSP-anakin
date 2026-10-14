@@ -16,6 +16,10 @@
     ],
     "selector": "source.python",
     "version": "1.23",
+    // The Python interpreter used to create the virtual environment for anakin-language-server. Empty to use
+    // "python3" ("python" on Windows) from the PATH. anakin-language-server doesn't support Python 3.14 yet.
+    // After changing it, delete the $cache_path/LSP-anakin directory so that the environment is created again.
+    "python": "",
     "initialization_options": {
         // "venv": "path/to/virtualenv"
     },

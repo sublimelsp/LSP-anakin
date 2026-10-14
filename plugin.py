@@ -54,6 +54,10 @@ class Anakin(AbstractPlugin):
 
     @classmethod
     def python_exe(cls) -> str:
+        settings = sublime.load_settings("LSP-anakin.sublime-settings")
+        python = settings.get("python")
+        if isinstance(python, str) and python:
+            return python
         return "python" if sublime.platform() == "windows" else "python3"
 
     @classmethod
