@@ -9,4 +9,19 @@ on:
 
 jobs:
   smoke:
-    uses: sublimelsp/lsp_smoke_test/.github/workflows/smoke-test.yml@v1
+    name: Smoke test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # The package installs anakin-language-server into a virtual environment made with the python3 (python on
+      # Windows) on the PATH. anakin-language-server requires pyflakes 2.x, which doesn't support Python 3.14.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - uses: sublimelsp/lsp_smoke_test@v1
