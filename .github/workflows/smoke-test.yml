@@ -18,10 +18,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # The package installs anakin-language-server into a virtual environment made with the python3 (python on
-      # Windows) on the PATH. anakin-language-server requires pyflakes 2.x, which doesn't support Python 3.14.
+      # anakin-language-server requires pyflakes 2.x, which doesn't support Python 3.14. The package creates the
+      # server's virtual environment with the interpreter from the "python" setting. (On macOS, Sublime Text takes the
+      # PATH from the login shell, so the PATH that setup-python sets wouldn't apply.)
       - uses: actions/setup-python@v7
+        id: python
         with:
           python-version: '3.13'
+
+      - name: Use that Python for the server
+        shell: bash
+        run: |
+          printf "settings:\n  LSP-anakin.sublime-settings:\n    python: '%s'\n" '${{ steps.python.outputs.python-path }}' >> tests/smoke/smoke.yaml
+          cat tests/smoke/smoke.yaml
 
       - uses: sublimelsp/lsp_smoke_test@v1
